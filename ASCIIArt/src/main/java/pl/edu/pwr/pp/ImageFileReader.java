@@ -1,10 +1,12 @@
 package pl.edu.pwr.pp;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ImageFileReader {
@@ -18,14 +20,21 @@ public class ImageFileReader {
 	 * @throws URISyntaxException
 	 *             jeżeli plik nie istnieje
 	 */
-	public int[][] readPgmFile(String fileName) throws URISyntaxException {
+	public int[][] readPgmFile(ImagePath imagePath) throws URISyntaxException {
 		int columns = 0;
 		int rows = 0;
 		int[][] intensities = null;
+		BufferedReader reader = null;
 
-		Path path = Paths.get(fileName);
-
-		try (BufferedReader reader = Files.newBufferedReader(path)) {
+		try {
+			if (imagePath.pathType == PathType.Dir) {
+				if (!(new File(imagePath.path).exists()))
+					throw new NullPointerException();
+				reader = Files.newBufferedReader(Paths.get(imagePath.path));
+			} else {
+				URL url = new URL(imagePath.path);
+				reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			}
 			// w kolejnych liniach kodu można / należy skorzystać z metody
 			// reader.readLine()
 
@@ -75,7 +84,7 @@ public class ImageFileReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return intensities;
 	}
-
 }

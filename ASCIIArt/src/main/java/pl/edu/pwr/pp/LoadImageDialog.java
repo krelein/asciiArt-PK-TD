@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JRadioButton;
@@ -27,11 +26,11 @@ public class LoadImageDialog extends JDialog {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JRadioButton rbDrive;
 	private JRadioButton rbUrl;
-	private boolean result=false;
+	private ImagePath imagePath = new ImagePath();
 
-	public boolean showDialog() {
+	public ImagePath showDialog() {
 		setVisible(true);
-		return result;
+		return imagePath;
 	}
 
 	/**
@@ -105,24 +104,15 @@ public class LoadImageDialog extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {// Zamykanie
-																// okienka i
-																// wpisywanie
-																// ścieżki do
-																// obrazka
+					public void actionPerformed(ActionEvent e) {
+						
 						if (rbDrive.isSelected()) {
-							PictureData.path = pathDirText.getText();
-							PictureData.pictureType = PictureType.Dir;
+							imagePath.path = pathDirText.getText();
+							imagePath.pathType = PathType.Dir;
 						} else {
-							PictureData.path = pathUrlText.getText();
-							PictureData.pictureType = PictureType.Url;
-						}
-						try {
-							PictureData.LoadImage();
-							result=true;
-						} catch (Exception ex) {
-							JOptionPane.showMessageDialog(null, ex.getMessage());
-						}			
+							imagePath.path = pathUrlText.getText();
+							imagePath.pathType = PathType.Url;
+						}						
 						dispose();
 					}
 				});

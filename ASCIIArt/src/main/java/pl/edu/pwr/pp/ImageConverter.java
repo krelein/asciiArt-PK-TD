@@ -6,7 +6,8 @@ public class ImageConverter {
 	 * Znaki odpowiadające kolejnym poziomom odcieni szarości - od czarnego (0)
 	 * do białego (255).
 	 */
-	public static String INTENSITY_2_ASCII = "@%#*+=-:. ";
+	private static String INTENSITY_2_ASCII = "@%#*+=-:. ";
+	private static String INTENSITY_1_ASCII = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
 	/**
 	 * Metoda zwraca znak odpowiadający danemu odcieniowi szarości. Odcienie
@@ -20,21 +21,31 @@ public class ImageConverter {
 	 *            odcień szarości w zakresie od 0 do 255
 	 * @return znak odpowiadający zadanemu odcieniowi szarości
 	 */
-	public static char intensityToAscii(int intensity) {
-		
+	public static char intensityToAscii(int intensity, ImageQuality quality) {
+
+		int step = quality.getStep();
+		int limit = step;
 		int n = 0;
-		if(intensity<26)n=0;
-		else if(intensity<52)n=1;
-		else if(intensity<77)n=2;		
-		else if(intensity<103)n=3;
-		else if(intensity<128)n=4;
-		else if(intensity<154)n=5;
-		else if(intensity<180)n=6;
-		else if(intensity<205)n=7;
-		else if(intensity<231)n=8;
-		else n=9;
-		
-		return INTENSITY_2_ASCII.charAt(n);
+		while (n < quality.getCharNumber()) {
+			if (intensity <= limit)
+			{
+				if (quality == ImageQuality.Low)
+					return INTENSITY_2_ASCII.charAt(n);
+				else
+					return INTENSITY_1_ASCII.charAt(n);
+			}
+			else {
+				++n;
+				limit += step;
+				if (n % 2 != 0 || n % 50 == 0)
+					++limit;
+			}
+		}
+		return '@';
+	}
+
+	public static char intensityToAscii(int intensity) {
+		return intensityToAscii(intensity, ImageQuality.Low);
 	}
 
 	/**
@@ -46,14 +57,14 @@ public class ImageConverter {
 	 *            tablica odcieni szarości obrazu
 	 * @return tablica znaków ASCII
 	 */
-	public static char[][] intensitiesToAscii(int[][] intensities) {
-	
+	public static char[][] intensitiesToAscii(int[][] intensities, ImageQuality quality) {
+
 		char[][] result = new char[intensities.length][intensities[0].length];
-		
-		for(int i=0; i< intensities.length; ++i)
-			for(int j=0;j<intensities[0].length;++j)
-				result[i][j] = intensityToAscii(intensities[i][j]);
-		
+
+		for (int i = 0; i < intensities.length; ++i)
+			for (int j = 0; j < intensities[0].length; ++j)
+				result[i][j] = intensityToAscii(intensities[i][j], quality);
+
 		return result;
 	}
 

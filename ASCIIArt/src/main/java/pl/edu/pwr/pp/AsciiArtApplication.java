@@ -1,4 +1,4 @@
-package pl.edu.pwr.pp;
+/*package pl.edu.pwr.pp;
 
 import java.net.URISyntaxException;
 
@@ -10,7 +10,7 @@ public class AsciiArtApplication {
 		String pgmExtension = ".pgm";
 		String txtExtension = ".txt";
 		
-		ImageFileReader imageFileReader = new ImageFileReader(); 
+		ImageFileReader imageFileReader = new ImageFileReader();
 		ImageFileWriter imageFileWriter = new ImageFileWriter();
 		
 		for (String imageName : images) {
@@ -27,3 +27,4 @@ public class AsciiArtApplication {
 		}
 	}
 }
+*/
