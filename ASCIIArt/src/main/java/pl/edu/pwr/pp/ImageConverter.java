@@ -27,21 +27,19 @@ public class ImageConverter {
 		int limit = step;
 		int n = 0;
 		while (n < quality.getCharNumber()) {
-			if (intensity <= limit)
-			{
+			if (intensity <= limit) {
 				if (quality == ImageQuality.Low)
 					return INTENSITY_2_ASCII.charAt(n);
 				else
 					return INTENSITY_1_ASCII.charAt(n);
-			}
-			else {
+			} else {
 				++n;
 				limit += step;
-				if (n % 2 != 0 || n % 50 == 0)
+				if (n % 2 != 0 || n % 25 == 0)
 					++limit;
 			}
 		}
-		return '@';
+		return ' ';
 	}
 
 	public static char intensityToAscii(int intensity) {

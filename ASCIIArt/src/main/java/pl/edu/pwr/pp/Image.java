@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -37,7 +39,7 @@ public class Image {
 			image = ImageIO.read(new URL(imagePath.path));
 	}
 
-	private BufferedImage convertToGray() {
+	public BufferedImage convertToGray() {
 		BufferedImage grayImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster raster = grayImage.getRaster();
 		int grayIntensity = 0;
@@ -73,7 +75,7 @@ public class Image {
 		asciiImage = ImageConverter.intensitiesToAscii(intensities, quality);
 	}
 
-	private BufferedImage scale(BufferedImage buffImage, ScaleOption option) {
+	public BufferedImage scale(BufferedImage buffImage, ScaleOption option) {
 		int width, height;
 		// sprawdzanie szerokości w zależności od wybranej opcji
 		if (option == ScaleOption.ScreenSize) {
@@ -93,4 +95,36 @@ public class Image {
 		return resizedImage;
 	}
 
+	private static final HashMap<RenderingHints.Key, Object> RenderingProperties = new HashMap<>();
+
+	static{
+	    RenderingProperties.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	    RenderingProperties.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+	    RenderingProperties.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+	}
+
+	public BufferedImage textToImage(Font f) throws IOException{
+	
+	    //Calculate size of buffered image.
+	    BufferedImage img = new BufferedImage(asciiImage[0].length*(f.getSize()-1), asciiImage.length*(f.getSize()-1), BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = img.createGraphics();
+	    g2d.setRenderingHints(RenderingProperties);
+
+	    g2d.setBackground(Color.WHITE);
+	    g2d.setColor(Color.BLACK);
+
+	    g2d.clearRect(0, 0, img.getWidth(), img.getHeight());
+	    g2d.setFont(f);
+
+	    for(int i=0; i<asciiImage.length; ++i){
+	    	for(int j=0; j<asciiImage[0].length; ++j)
+	    		g2d.drawString( String.valueOf(asciiImage[i][j]), j*(f.getSize()-1),i*(f.getSize()-1));
+	    }
+	    
+	    g2d.dispose();
+
+	   
+	    return img;
+	}
 }
